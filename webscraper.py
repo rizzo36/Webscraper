@@ -1,7 +1,7 @@
 import requests as req
 from bs4 import BeautifulSoup as soup 
 
-length = 5
+run_continue = True
 
 	# spezifiziere meine url
 my_url ='https://www.stilinberlin.de/tag/berlins-best'
@@ -20,7 +20,7 @@ headers = "Titel; Autor; Datum; Beschreibung; Link\n"
 f.write(headers)
 
 
-while length > 4:
+while run_continue == True:
 	# lese die url ein durch requests aka req und speichere sie in page_html
 	page_html = req.get(my_url)
 
@@ -32,9 +32,6 @@ while length > 4:
 
 	#hier definiere ich dass durch alle article mit dem class Namen post durchgegangen wird und in articles gespeichert
 	articles = page_soup.findAll("article", {"class": "post"})
-
-	# length = 5
-	# while length > 4:
 
 	# # jetzt sage ich gehe alles einzeln durch für jeden article den du gefunden hast und speichere die Information in den
 	# # Variablen titel etc was ich suche ist im html weiter vernestelt also gehe ich mehrere divs und a Tags runter...
@@ -84,12 +81,11 @@ while length > 4:
 		# Finde die nächste Seite. Ich könne es auch so machen dass ich direkt nach einem a Tag schaue mit dem String Older Posts
 	try:
 		next_page = page_soup.findAll("div", {"class" : "next"})
-		next_page_link = next_page[0].a.get("href")		
-		length = len(next_page_link)
-		my_url = next_page_link
+		my_url = next_page[0].a.get("href")		
+		run_continue = True
 	except:
-		length = 0
-		print("Laenge nach Except: " + str(length))
+		run_continue = False
+		print("Keine weitere Seite")
 		pass
 
 f.close()
